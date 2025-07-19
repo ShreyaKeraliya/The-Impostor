@@ -436,12 +436,10 @@ const SpyGame = () => {
                 
                 <div className="grid grid-cols-2 gap-4 mt-6">
                   <div className="p-3 bg-secret-green/10 border border-secret-green/30 rounded-lg">
-                    <p className="text-sm text-muted-foreground">Innocent Word</p>
-                    <p className="font-bold text-secret-green">{gameState.selectedPair.common}</p>
+                    <p className="font-bold text-secret-green text-center">{gameState.selectedPair.common}</p>
                   </div>
                   <div className="p-3 bg-spy-red/10 border border-spy-red/30 rounded-lg">
-                    <p className="text-sm text-muted-foreground">Spy Word</p>
-                    <p className="font-bold text-spy-red">{gameState.selectedPair.spy}</p>
+                    <p className="font-bold text-spy-red text-center">{gameState.selectedPair.spy}</p>
                   </div>
                 </div>
               </div>

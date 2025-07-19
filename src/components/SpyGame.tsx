@@ -6,18 +6,222 @@ import { Label } from '@/components/ui/label';
 import { Eye, EyeOff, Users, Shield, ArrowRight, CheckCircle, Clock, User } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
-const wordPairs = [
-  { common: "Hospital", spy: "Clinic" },
-  { common: "Beach", spy: "Park" },
+const moreWordPairs = [
+   { common: "Hospital", spy: "Clinic" },
   { common: "Library", spy: "Bookstore" },
   { common: "Airport", spy: "Train Station" },
   { common: "Restaurant", spy: "Cafe" },
   { common: "School", spy: "College" },
-  { common: "Jungle", spy: "Forest" },
-  { common: "Museum", spy: "Gallery" },
+  { common: "Mall", spy: "Market" },
+  { common: "Beach", spy: "Resort" },
   { common: "Cinema", spy: "Theatre" },
-  { common: "Bank", spy: "Office" }
+  { common: "Zoo", spy: "Safari" },
+  { common: "Hotel", spy: "Motel" },
+
+  // FOOD
+  { common: "Pizza", spy: "Burger" },
+  { common: "Tea", spy: "Coffee" },
+  { common: "Sushi", spy: "Dumpling" },
+  { common: "Ice Cream", spy: "Gelato" },
+  { common: "Pasta", spy: "Noodles" },
+  { common: "Cake", spy: "Brownie" },
+  { common: "Biryani", spy: "Pulao" },
+  { common: "Fries", spy: "Chips" },
+  { common: "Milkshake", spy: "Smoothie" },
+  { common: "Taco", spy: "Burrito" },
+
+  // ANIMALS
+  { common: "Dog", spy: "Wolf" },
+  { common: "Cat", spy: "Tiger" },
+  { common: "Elephant", spy: "Rhino" },
+  { common: "Horse", spy: "Donkey" },
+  { common: "Crocodile", spy: "Alligator" },
+  { common: "Rabbit", spy: "Hare" },
+  { common: "Lion", spy: "Tiger" },
+  { common: "Monkey", spy: "Chimpanzee" },
+  { common: "Cow", spy: "Buffalo" },
+  { common: "Duck", spy: "Goose" },
+
+  // SPORTS & GAMES
+  { common: "Football", spy: "Rugby" },
+  { common: "Tennis", spy: "Badminton" },
+  { common: "Chess", spy: "Checkers" },
+  { common: "Cricket", spy: "Baseball" },
+  { common: "Basketball", spy: "Volleyball" },
+  { common: "Hockey", spy: "Ice Hockey" },
+  { common: "Golf", spy: "Mini Golf" },
+  { common: "Wrestling", spy: "Boxing" },
+  { common: "Carrom", spy: "Ludo" },
+  { common: "Cycling", spy: "Skating" },
+
+  // TRANSPORT
+  { common: "Car", spy: "Taxi" },
+  { common: "Bus", spy: "Van" },
+  { common: "Bicycle", spy: "Scooter" },
+  { common: "Plane", spy: "Helicopter" },
+  { common: "Boat", spy: "Ship" },
+  { common: "Train", spy: "Metro" },
+  { common: "Truck", spy: "Lorry" },
+  { common: "Rickshaw", spy: "Auto" },
+  { common: "Subway", spy: "Tram" },
+  { common: "Jet", spy: "Aircraft" },
+
+  // OBJECTS
+  { common: "Phone", spy: "Tablet" },
+  { common: "Laptop", spy: "Desktop" },
+  { common: "Pen", spy: "Pencil" },
+  { common: "Chair", spy: "Stool" },
+  { common: "Bottle", spy: "Glass" },
+  { common: "TV", spy: "Projector" },
+  { common: "Mirror", spy: "Window" },
+  { common: "Bag", spy: "Backpack" },
+  { common: "Key", spy: "Lock" },
+  { common: "Clock", spy: "Watch" },
+
+  // NATURE / OUTDOORS
+  { common: "Mountain", spy: "Hill" },
+  { common: "River", spy: "Lake" },
+  { common: "Sun", spy: "Moon" },
+  { common: "Rain", spy: "Storm" },
+  { common: "Forest", spy: "Jungle" },
+  { common: "Snow", spy: "Ice" },
+  { common: "Sky", spy: "Cloud" },
+  { common: "Tree", spy: "Bush" },
+  { common: "Sand", spy: "Dust" },
+  { common: "Wind", spy: "Breeze" },
+
+  // JOBS & PEOPLE
+  { common: "Doctor", spy: "Nurse" },
+  { common: "Teacher", spy: "Professor" },
+  { common: "Pilot", spy: "Driver" },
+  { common: "Chef", spy: "Cook" },
+  { common: "Police", spy: "Guard" },
+  { common: "Engineer", spy: "Mechanic" },
+  { common: "Singer", spy: "Dancer" },
+  { common: "Artist", spy: "Painter" },
+  { common: "Actor", spy: "Model" },
+  { common: "Judge", spy: "Lawyer" },
+
+  // FESTIVALS / EVENTS
+  { common: "Birthday", spy: "Anniversary" },
+  { common: "Wedding", spy: "Reception" },
+  { common: "Christmas", spy: "New Year" },
+  { common: "Diwali", spy: "Holi" },
+  { common: "Concert", spy: "Festival" },
+  { common: "Exam", spy: "Test" },
+  { common: "Game Night", spy: "Movie Night" },
+  { common: "Picnic", spy: "Trip" },
+  { common: "Match", spy: "Tournament" },
+  { common: "Meeting", spy: "Interview" }
+  // PLACES
+  { common: "Temple", spy: "Church" },
+  { common: "Garden", spy: "Park" },
+  { common: "Bridge", spy: "Tunnel" },
+  { common: "Canteen", spy: "Mess" },
+  { common: "Stadium", spy: "Arena" },
+  { common: "Lounge", spy: "Living Room" },
+  { common: "Garage", spy: "Workshop" },
+  { common: "Farm", spy: "Field" },
+  { common: "Cabin", spy: "Cottage" },
+  { common: "Theatre", spy: "Opera" },
+
+  // FOOD
+  { common: "Bread", spy: "Toast" },
+  { common: "Butter", spy: "Cheese" },
+  { common: "Soup", spy: "Stew" },
+  { common: "Rice", spy: "Quinoa" },
+  { common: "Donut", spy: "Cupcake" },
+  { common: "Ketchup", spy: "Sauce" },
+  { common: "Salad", spy: "Sprouts" },
+  { common: "Curry", spy: "Gravy" },
+  { common: "Roti", spy: "Paratha" },
+  { common: "Juice", spy: "Soda" },
+
+  // ANIMALS
+  { common: "Bear", spy: "Panda" },
+  { common: "Fish", spy: "Shark" },
+  { common: "Peacock", spy: "Swan" },
+  { common: "Parrot", spy: "Pigeon" },
+  { common: "Frog", spy: "Toad" },
+  { common: "Owl", spy: "Eagle" },
+  { common: "Dog", spy: "Fox" },
+  { common: "Bat", spy: "Crow" },
+  { common: "Camel", spy: "Horse" },
+  { common: "Goat", spy: "Sheep" },
+
+  // SPORTS / GAMES
+  { common: "Snooker", spy: "Pool" },
+  { common: "Running", spy: "Jogging" },
+  { common: "Bowling", spy: "Cricket" },
+  { common: "Skating", spy: "Skiing" },
+  { common: "Kabaddi", spy: "Kho Kho" },
+  { common: "Wrestling", spy: "Karate" },
+  { common: "Archery", spy: "Shooting" },
+  { common: "Badminton", spy: "Squash" },
+  { common: "Swimming", spy: "Diving" },
+  { common: "Table Tennis", spy: "Ping Pong" },
+
+  // TRANSPORT
+  { common: "Auto", spy: "TukTuk" },
+  { common: "Cruise", spy: "Yacht" },
+  { common: "Truck", spy: "Trailer" },
+  { common: "Bicycle", spy: "E-Bike" },
+  { common: "Rickshaw", spy: "Cart" },
+  { common: "Helicopter", spy: "Drone" },
+  { common: "Scooter", spy: "Moped" },
+  { common: "Tram", spy: "Subway" },
+  { common: "Skateboard", spy: "Rollerblade" },
+  { common: "Jet", spy: "Fighter Plane" },
+
+  // OBJECTS
+  { common: "Notebook", spy: "Diary" },
+  { common: "TV", spy: "Monitor" },
+  { common: "Towel", spy: "Napkin" },
+  { common: "Cushion", spy: "Pillow" },
+  { common: "Spoon", spy: "Fork" },
+  { common: "Shoe", spy: "Slipper" },
+  { common: "Charger", spy: "Power Bank" },
+  { common: "Battery", spy: "Cell" },
+  { common: "Table", spy: "Desk" },
+  { common: "Curtain", spy: "Blinds" },
+
+  // NATURE / SEASONS
+  { common: "Spring", spy: "Autumn" },
+  { common: "Sunset", spy: "Sunrise" },
+  { common: "Rainbow", spy: "Aurora" },
+  { common: "Lightning", spy: "Thunder" },
+  { common: "Fog", spy: "Mist" },
+  { common: "River", spy: "Stream" },
+  { common: "Rock", spy: "Stone" },
+  { common: "Volcano", spy: "Mountain" },
+  { common: "Flower", spy: "Rose" },
+  { common: "Sand", spy: "Clay" },
+
+  // JOBS / PEOPLE
+  { common: "Singer", spy: "Composer" },
+  { common: "Actor", spy: "Director" },
+  { common: "Scientist", spy: "Inventor" },
+  { common: "Author", spy: "Poet" },
+  { common: "Engineer", spy: "Technician" },
+  { common: "Manager", spy: "Leader" },
+  { common: "Baker", spy: "Chef" },
+  { common: "Farmer", spy: "Gardener" },
+  { common: "Driver", spy: "Pilot" },
+  { common: "Soldier", spy: "Commander" },
+
+  // TECH / TOOLS
+  { common: "Remote", spy: "Controller" },
+  { common: "Mouse", spy: "Trackpad" },
+  { common: "Camera", spy: "Webcam" },
+  { common: "Speaker", spy: "Headphone" },
+  { common: "Mic", spy: "Recorder" },
+  { common: "Light", spy: "Lamp" },
+  { common: "Calculator", spy: "Phone" },
+  { common: "Router", spy: "Modem" },
+  { common: "USB", spy: "Memory Card" },
+  { common: "Drone", spy: "Helicam" }
 ];
+
 
 interface GameState {
   totalPlayers: number;
@@ -352,25 +556,16 @@ const SpyGame = () => {
                 </div>
               ) : (
                 <div className="text-center space-y-4 animate-reveal">
-                  <div className={`mx-auto w-20 h-20 rounded-full flex items-center justify-center ${
-                    isCurrentPlayerSpy() ? 'bg-gradient-danger' : 'bg-gradient-gold'
-                  }`}>
-                    {isCurrentPlayerSpy() ? (
-                      <Eye className="w-10 h-10 text-foreground" />
-                    ) : (
-                      <Users className="w-10 h-10 text-primary-foreground" />
-                    )}
-                  </div>
+                  <div className="mx-auto w-20 h-20 bg-gradient-gold rounded-full flex items-center justify-center">
+  <Eye className="w-10 h-10 text-primary-foreground" />
+</div>
+
                   
-                  <div className={`p-6 rounded-lg border-2 ${
-                    isCurrentPlayerSpy() 
-                      ? 'bg-spy-red/10 border-spy-red/50' 
-                      : 'bg-spy-gold/10 border-spy-gold/50'
-                  }`}>
-                    <p className="text-4xl font-bold text-foreground text-center">
-                      {getCurrentWord()}
-                    </p>
-                  </div>
+                  <div className="p-6 rounded-lg border-2 bg-spy-gold/10 border-spy-gold/50">
+  <p className="text-4xl font-bold text-foreground text-center">
+    {getCurrentWord()}
+  </p>
+</div>
 
                   <Button 
                     onClick={nextPlayer}
@@ -434,16 +629,7 @@ const SpyGame = () => {
                   </p>
                 </div>
                 
-                <div className="grid grid-cols-2 gap-4 mt-6">
-                  <div className="p-3 bg-secret-green/10 border border-secret-green/30 rounded-lg">
-                    <p className="font-bold text-secret-green text-center">{gameState.selectedPair.common}</p>
-                  </div>
-                  <div className="p-3 bg-spy-red/10 border border-spy-red/30 rounded-lg">
-                    <p className="font-bold text-spy-red text-center">{gameState.selectedPair.spy}</p>
-                  </div>
-                </div>
-              </div>
-
+                
               <Button 
                 onClick={resetGame}
                 variant="outline"

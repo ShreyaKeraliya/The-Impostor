@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-import { Eye, EyeOff, Users, Shield, ArrowRight, CheckCircle } from 'lucide-react';
+import { Eye, EyeOff, Users, Shield, ArrowRight, CheckCircle, Clock, User } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const wordPairs = [
@@ -25,8 +25,10 @@ interface GameState {
   selectedPair: { common: string; spy: string };
   currentPlayer: number;
   wordRevealed: boolean;
-  gamePhase: 'setup' | 'reveal' | 'complete';
+  gamePhase: 'setup' | 'names' | 'reveal' | 'complete';
   spyPlayers: Set<number>;
+  playerNames: string[];
+  timeLeft: number;
 }
 
 const SpyGame = () => {
@@ -38,7 +40,9 @@ const SpyGame = () => {
     currentPlayer: 1,
     wordRevealed: false,
     gamePhase: 'setup',
-    spyPlayers: new Set()
+    spyPlayers: new Set(),
+    playerNames: [],
+    timeLeft: 300 // 5 minutes in seconds
   });
 
   const [setupForm, setSetupForm] = useState({
@@ -46,7 +50,25 @@ const SpyGame = () => {
     spyCount: ''
   });
 
-  const startGame = () => {
+  const [playerNamesForm, setPlayerNamesForm] = useState<string[]>([]);
+
+  // Timer effect
+  useEffect(() => {
+    if (gameState.gamePhase === 'complete' && gameState.timeLeft > 0) {
+      const timer = setTimeout(() => {
+        setGameState(prev => ({ ...prev, timeLeft: prev.timeLeft - 1 }));
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [gameState.gamePhase, gameState.timeLeft]);
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  const proceedToNames = () => {
     const total = parseInt(setupForm.totalPlayers);
     const spies = parseInt(setupForm.spyCount);
 
@@ -77,29 +99,51 @@ const SpyGame = () => {
       return;
     }
 
+    setPlayerNamesForm(Array(total).fill(''));
+    setGameState(prev => ({ 
+      ...prev, 
+      totalPlayers: total,
+      spyCount: spies,
+      gamePhase: 'names'
+    }));
+  };
+
+  const startGame = () => {
+    // Check if all names are filled
+    const emptyNames = playerNamesForm.some(name => !name.trim());
+    if (emptyNames) {
+      toast({
+        title: "Missing Names",
+        description: "Please enter names for all players.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     // Randomly select word pair
     const selectedPair = wordPairs[Math.floor(Math.random() * wordPairs.length)];
     
     // Randomly assign spy players
     const spyPlayers = new Set<number>();
-    while (spyPlayers.size < spies) {
-      const randomPlayer = Math.floor(Math.random() * total) + 1;
+    while (spyPlayers.size < gameState.spyCount) {
+      const randomPlayer = Math.floor(Math.random() * gameState.totalPlayers) + 1;
       spyPlayers.add(randomPlayer);
     }
 
-    setGameState({
-      totalPlayers: total,
-      spyCount: spies,
+    setGameState(prev => ({
+      ...prev,
       selectedPair,
       currentPlayer: 1,
       wordRevealed: false,
       gamePhase: 'reveal',
-      spyPlayers
-    });
+      spyPlayers,
+      playerNames: playerNamesForm,
+      timeLeft: 300
+    }));
 
     toast({
       title: "Game Started!",
-      description: `${total} players, ${spies} ${spies === 1 ? 'spy' : 'spies'}. Pass to Player 1.`,
+      description: `${gameState.totalPlayers} players, ${gameState.spyCount} ${gameState.spyCount === 1 ? 'spy' : 'spies'}. Pass to ${playerNamesForm[0]}.`,
       variant: "default"
     });
   };
@@ -132,9 +176,12 @@ const SpyGame = () => {
       currentPlayer: 1,
       wordRevealed: false,
       gamePhase: 'setup',
-      spyPlayers: new Set()
+      spyPlayers: new Set(),
+      playerNames: [],
+      timeLeft: 300
     });
     setSetupForm({ totalPlayers: '', spyCount: '' });
+    setPlayerNamesForm([]);
   };
 
   const getCurrentWord = () => {
@@ -198,14 +245,76 @@ const SpyGame = () => {
               </div>
               
               <Button 
-                onClick={startGame} 
+                onClick={proceedToNames} 
                 className="w-full"
                 variant="gold"
                 size="lg"
               >
-                Start Game
+                Continue
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
+  if (gameState.gamePhase === 'names') {
+    return (
+      <div className="min-h-screen bg-background p-4 flex items-center justify-center">
+        <div className="w-full max-w-md animate-slide-up">
+          <Card className="bg-card border-spy-gold/20 shadow-elegant">
+            <CardHeader className="text-center space-y-4">
+              <div className="mx-auto w-16 h-16 bg-gradient-spy rounded-full flex items-center justify-center">
+                <User className="w-8 h-8 text-spy-gold" />
+              </div>
+              <CardTitle className="text-2xl font-bold text-foreground">
+                Player Names
+              </CardTitle>
+              <CardDescription className="text-muted-foreground">
+                Enter names for all players
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-3 max-h-64 overflow-y-auto">
+                {playerNamesForm.map((name, index) => (
+                  <div key={index} className="space-y-2">
+                    <Label htmlFor={`player-${index}`} className="text-foreground">
+                      Player {index + 1}
+                    </Label>
+                    <Input
+                      id={`player-${index}`}
+                      placeholder={`Enter name for Player ${index + 1}`}
+                      value={name}
+                      onChange={(e) => {
+                        const newNames = [...playerNamesForm];
+                        newNames[index] = e.target.value;
+                        setPlayerNamesForm(newNames);
+                      }}
+                      className="bg-input border-border text-foreground"
+                    />
+                  </div>
+                ))}
+              </div>
+              
+              <div className="flex gap-2">
+                <Button 
+                  onClick={() => setGameState(prev => ({ ...prev, gamePhase: 'setup' }))}
+                  variant="outline"
+                  className="flex-1"
+                >
+                  Back
+                </Button>
+                <Button 
+                  onClick={startGame} 
+                  variant="gold"
+                  className="flex-1"
+                >
+                  Start Game
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -220,7 +329,7 @@ const SpyGame = () => {
           <Card className="bg-card border-spy-gold/20 shadow-elegant">
             <CardHeader className="text-center">
               <CardTitle className="text-2xl font-bold text-foreground">
-                Player {gameState.currentPlayer}
+                {gameState.playerNames[gameState.currentPlayer - 1]}
               </CardTitle>
               <CardDescription className="text-muted-foreground">
                 {gameState.wordRevealed ? "Your secret word:" : "Pass to the next player and tap to reveal"}
@@ -258,10 +367,7 @@ const SpyGame = () => {
                       ? 'bg-spy-red/10 border-spy-red/50' 
                       : 'bg-spy-gold/10 border-spy-gold/50'
                   }`}>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      {isCurrentPlayerSpy() ? "You are a SPY! Your word is:" : "You are INNOCENT! Your word is:"}
-                    </p>
-                    <p className="text-3xl font-bold text-foreground">
+                    <p className="text-4xl font-bold text-foreground text-center">
                       {getCurrentWord()}
                     </p>
                   </div>
@@ -279,7 +385,7 @@ const SpyGame = () => {
                       </>
                     ) : (
                       <>
-                        Next Player ({gameState.currentPlayer + 1})
+                        Next Player ({gameState.playerNames[gameState.currentPlayer] || gameState.currentPlayer + 1})
                         <ArrowRight className="w-4 h-4 ml-2" />
                       </>
                     )}
@@ -300,11 +406,20 @@ const SpyGame = () => {
           <Card className="bg-card border-spy-gold/20 shadow-elegant">
             <CardHeader className="text-center space-y-4">
               <div className="mx-auto w-20 h-20 bg-gradient-gold rounded-full flex items-center justify-center animate-spy-pulse">
-                <CheckCircle className="w-10 h-10 text-primary-foreground" />
+                {gameState.timeLeft > 0 ? (
+                  <Clock className="w-10 h-10 text-primary-foreground" />
+                ) : (
+                  <CheckCircle className="w-10 h-10 text-primary-foreground" />
+                )}
               </div>
               <CardTitle className="text-3xl font-bold text-foreground">
-                Game Ready!
+                {gameState.timeLeft > 0 ? "Discussion Time!" : "Time's Up!"}
               </CardTitle>
+              {gameState.timeLeft > 0 && (
+                <div className="text-2xl font-mono text-spy-gold">
+                  {formatTime(gameState.timeLeft)}
+                </div>
+              )}
             </CardHeader>
             <CardContent className="space-y-6 text-center">
               <div className="space-y-4">
@@ -313,7 +428,9 @@ const SpyGame = () => {
                 </p>
                 <div className="p-4 bg-spy-gold/10 border border-spy-gold/30 rounded-lg">
                   <p className="text-spy-gold font-semibold">
-                    Start the discussion and vote out the spy!
+                    {gameState.timeLeft > 0 
+                      ? "Discuss and vote out the spy!" 
+                      : "Time to reveal the results!"}
                   </p>
                 </div>
                 

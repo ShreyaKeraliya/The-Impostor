@@ -2,41 +2,58 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Spy Game Design System - Dark, sophisticated theme with gold and red accents */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 218 23% 5%;
+    --foreground: 45 38% 92%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 218 23% 8%;
+    --card-foreground: 45 38% 92%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 218 23% 8%;
+    --popover-foreground: 45 38% 92%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 45 93% 58%;
+    --primary-foreground: 218 23% 5%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 45 38% 92%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 217 33% 17%;
+    --accent-foreground: 45 38% 92%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 84% 62%;
+    --destructive-foreground: 45 38% 92%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 217 33% 17%;
+    --input: 217 33% 17%;
+    --ring: 45 93% 58%;
 
     --radius: 0.5rem;
+
+    /* Spy Game Custom Variables */
+    --spy-red: 0 84% 62%;
+    --spy-gold: 45 93% 58%;
+    --agent-blue: 220 91% 15%;
+    --secret-green: 142 76% 36%;
+    
+    /* Gradients */
+    --gradient-spy: linear-gradient(135deg, hsl(var(--agent-blue)), hsl(var(--background)));
+    --gradient-danger: linear-gradient(135deg, hsl(var(--spy-red)), hsl(var(--destructive)));
+    --gradient-gold: linear-gradient(135deg, hsl(var(--spy-gold)), hsl(var(--primary)));
+    
+    /* Shadows */
+    --shadow-spy: 0 25px 50px -12px hsl(var(--spy-red) / 0.25);
+    --shadow-gold: 0 25px 50px -12px hsl(var(--spy-gold) / 0.25);
+    --shadow-elegant: 0 20px 25px -5px hsl(0 0% 0% / 0.4);
+    
+    /* Animation */
+    --transition-spy: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 
     --sidebar-background: 0 0% 98%;
 
@@ -56,8 +73,9 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    /* Dark mode uses the same spy theme */
+    --background: 218 23% 5%;
+    --foreground: 45 38% 92%;
 
     --card: 222.2 84% 4.9%;
     --card-foreground: 210 40% 98%;

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React,{ useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -6,220 +6,172 @@ import { Label } from '@/components/ui/label';
 import { Eye, EyeOff, Users, Shield, ArrowRight, CheckCircle, Clock, User } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
+
 const moreWordPairs = [
-   { common: "Hospital", spy: "Clinic" },
-  { common: "Library", spy: "Bookstore" },
-  { common: "Airport", spy: "Train Station" },
-  { common: "Restaurant", spy: "Cafe" },
-  { common: "School", spy: "College" },
-  { common: "Mall", spy: "Market" },
-  { common: "Beach", spy: "Resort" },
-  { common: "Cinema", spy: "Theatre" },
-  { common: "Zoo", spy: "Safari" },
-  { common: "Hotel", spy: "Motel" },
-
-  // FOOD
-  { common: "Pizza", spy: "Burger" },
-  { common: "Tea", spy: "Coffee" },
-  { common: "Sushi", spy: "Dumpling" },
-  { common: "Ice Cream", spy: "Gelato" },
-  { common: "Pasta", spy: "Noodles" },
-  { common: "Cake", spy: "Brownie" },
-  { common: "Biryani", spy: "Pulao" },
-  { common: "Fries", spy: "Chips" },
-  { common: "Milkshake", spy: "Smoothie" },
-  { common: "Taco", spy: "Burrito" },
-
-  // ANIMALS
-  { common: "Dog", spy: "Wolf" },
-  { common: "Cat", spy: "Tiger" },
-  { common: "Elephant", spy: "Rhino" },
-  { common: "Horse", spy: "Donkey" },
-  { common: "Crocodile", spy: "Alligator" },
-  { common: "Rabbit", spy: "Hare" },
-  { common: "Lion", spy: "Tiger" },
-  { common: "Monkey", spy: "Chimpanzee" },
-  { common: "Cow", spy: "Buffalo" },
-  { common: "Duck", spy: "Goose" },
-
-  // SPORTS & GAMES
-  { common: "Football", spy: "Rugby" },
-  { common: "Tennis", spy: "Badminton" },
-  { common: "Chess", spy: "Checkers" },
-  { common: "Cricket", spy: "Baseball" },
-  { common: "Basketball", spy: "Volleyball" },
-  { common: "Hockey", spy: "Ice Hockey" },
-  { common: "Golf", spy: "Mini Golf" },
-  { common: "Wrestling", spy: "Boxing" },
-  { common: "Carrom", spy: "Ludo" },
-  { common: "Cycling", spy: "Skating" },
-
-  // TRANSPORT
-  { common: "Car", spy: "Taxi" },
-  { common: "Bus", spy: "Van" },
-  { common: "Bicycle", spy: "Scooter" },
-  { common: "Plane", spy: "Helicopter" },
-  { common: "Boat", spy: "Ship" },
-  { common: "Train", spy: "Metro" },
-  { common: "Truck", spy: "Lorry" },
-  { common: "Rickshaw", spy: "Auto" },
-  { common: "Subway", spy: "Tram" },
-  { common: "Jet", spy: "Aircraft" },
-
-  // OBJECTS
-  { common: "Phone", spy: "Tablet" },
-  { common: "Laptop", spy: "Desktop" },
-  { common: "Pen", spy: "Pencil" },
-  { common: "Chair", spy: "Stool" },
-  { common: "Bottle", spy: "Glass" },
-  { common: "TV", spy: "Projector" },
-  { common: "Mirror", spy: "Window" },
-  { common: "Bag", spy: "Backpack" },
-  { common: "Key", spy: "Lock" },
-  { common: "Clock", spy: "Watch" },
-
-  // NATURE / OUTDOORS
-  { common: "Mountain", spy: "Hill" },
-  { common: "River", spy: "Lake" },
-  { common: "Sun", spy: "Moon" },
-  { common: "Rain", spy: "Storm" },
-  { common: "Forest", spy: "Jungle" },
-  { common: "Snow", spy: "Ice" },
-  { common: "Sky", spy: "Cloud" },
-  { common: "Tree", spy: "Bush" },
-  { common: "Sand", spy: "Dust" },
-  { common: "Wind", spy: "Breeze" },
-
-  // JOBS & PEOPLE
-  { common: "Doctor", spy: "Nurse" },
-  { common: "Teacher", spy: "Professor" },
-  { common: "Pilot", spy: "Driver" },
-  { common: "Chef", spy: "Cook" },
-  { common: "Police", spy: "Guard" },
-  { common: "Engineer", spy: "Mechanic" },
-  { common: "Singer", spy: "Dancer" },
-  { common: "Artist", spy: "Painter" },
-  { common: "Actor", spy: "Model" },
-  { common: "Judge", spy: "Lawyer" },
-
-  // FESTIVALS / EVENTS
-  { common: "Birthday", spy: "Anniversary" },
-  { common: "Wedding", spy: "Reception" },
-  { common: "Christmas", spy: "New Year" },
-  { common: "Diwali", spy: "Holi" },
-  { common: "Concert", spy: "Festival" },
-  { common: "Exam", spy: "Test" },
-  { common: "Game Night", spy: "Movie Night" },
-  { common: "Picnic", spy: "Trip" },
-  { common: "Match", spy: "Tournament" },
-  { common: "Meeting", spy: "Interview" }
-  // PLACES
-  { common: "Temple", spy: "Church" },
-  { common: "Garden", spy: "Park" },
-  { common: "Bridge", spy: "Tunnel" },
-  { common: "Canteen", spy: "Mess" },
-  { common: "Stadium", spy: "Arena" },
-  { common: "Lounge", spy: "Living Room" },
-  { common: "Garage", spy: "Workshop" },
-  { common: "Farm", spy: "Field" },
-  { common: "Cabin", spy: "Cottage" },
-  { common: "Theatre", spy: "Opera" },
-
-  // FOOD
-  { common: "Bread", spy: "Toast" },
-  { common: "Butter", spy: "Cheese" },
-  { common: "Soup", spy: "Stew" },
-  { common: "Rice", spy: "Quinoa" },
-  { common: "Donut", spy: "Cupcake" },
-  { common: "Ketchup", spy: "Sauce" },
-  { common: "Salad", spy: "Sprouts" },
-  { common: "Curry", spy: "Gravy" },
-  { common: "Roti", spy: "Paratha" },
-  { common: "Juice", spy: "Soda" },
-
-  // ANIMALS
-  { common: "Bear", spy: "Panda" },
-  { common: "Fish", spy: "Shark" },
-  { common: "Peacock", spy: "Swan" },
-  { common: "Parrot", spy: "Pigeon" },
-  { common: "Frog", spy: "Toad" },
-  { common: "Owl", spy: "Eagle" },
-  { common: "Dog", spy: "Fox" },
-  { common: "Bat", spy: "Crow" },
-  { common: "Camel", spy: "Horse" },
-  { common: "Goat", spy: "Sheep" },
-
-  // SPORTS / GAMES
-  { common: "Snooker", spy: "Pool" },
-  { common: "Running", spy: "Jogging" },
-  { common: "Bowling", spy: "Cricket" },
-  { common: "Skating", spy: "Skiing" },
-  { common: "Kabaddi", spy: "Kho Kho" },
-  { common: "Wrestling", spy: "Karate" },
-  { common: "Archery", spy: "Shooting" },
-  { common: "Badminton", spy: "Squash" },
-  { common: "Swimming", spy: "Diving" },
-  { common: "Table Tennis", spy: "Ping Pong" },
-
-  // TRANSPORT
-  { common: "Auto", spy: "TukTuk" },
-  { common: "Cruise", spy: "Yacht" },
-  { common: "Truck", spy: "Trailer" },
-  { common: "Bicycle", spy: "E-Bike" },
-  { common: "Rickshaw", spy: "Cart" },
-  { common: "Helicopter", spy: "Drone" },
-  { common: "Scooter", spy: "Moped" },
-  { common: "Tram", spy: "Subway" },
-  { common: "Skateboard", spy: "Rollerblade" },
-  { common: "Jet", spy: "Fighter Plane" },
-
-  // OBJECTS
-  { common: "Notebook", spy: "Diary" },
-  { common: "TV", spy: "Monitor" },
-  { common: "Towel", spy: "Napkin" },
-  { common: "Cushion", spy: "Pillow" },
-  { common: "Spoon", spy: "Fork" },
-  { common: "Shoe", spy: "Slipper" },
-  { common: "Charger", spy: "Power Bank" },
-  { common: "Battery", spy: "Cell" },
-  { common: "Table", spy: "Desk" },
-  { common: "Curtain", spy: "Blinds" },
-
-  // NATURE / SEASONS
-  { common: "Spring", spy: "Autumn" },
-  { common: "Sunset", spy: "Sunrise" },
-  { common: "Rainbow", spy: "Aurora" },
-  { common: "Lightning", spy: "Thunder" },
-  { common: "Fog", spy: "Mist" },
-  { common: "River", spy: "Stream" },
-  { common: "Rock", spy: "Stone" },
-  { common: "Volcano", spy: "Mountain" },
-  { common: "Flower", spy: "Rose" },
-  { common: "Sand", spy: "Clay" },
-
-  // JOBS / PEOPLE
-  { common: "Singer", spy: "Composer" },
-  { common: "Actor", spy: "Director" },
-  { common: "Scientist", spy: "Inventor" },
-  { common: "Author", spy: "Poet" },
-  { common: "Engineer", spy: "Technician" },
-  { common: "Manager", spy: "Leader" },
-  { common: "Baker", spy: "Chef" },
-  { common: "Farmer", spy: "Gardener" },
-  { common: "Driver", spy: "Pilot" },
-  { common: "Soldier", spy: "Commander" },
-
-  // TECH / TOOLS
-  { common: "Remote", spy: "Controller" },
-  { common: "Mouse", spy: "Trackpad" },
-  { common: "Camera", spy: "Webcam" },
-  { common: "Speaker", spy: "Headphone" },
-  { common: "Mic", spy: "Recorder" },
-  { common: "Light", spy: "Lamp" },
-  { common: "Calculator", spy: "Phone" },
-  { common: "Router", spy: "Modem" },
-  { common: "USB", spy: "Memory Card" },
-  { common: "Drone", spy: "Helicam" }
+    { common: "Teacher", spy: "Coach" },
+    { common: "Doctor", spy: "Paramedic" },
+    { common: "Engineer", spy: "Architect" },
+    { common: "Judge", spy: "Juror" },
+    { common: "Pilot", spy: "Astronaut" },
+    { common: "Chef", spy: "Baker" },
+    { common: "Police", spy: "Detective" },
+    { common: "Firefighter", spy: "Lifeguard" },
+    { common: "Farmer", spy: "Gardener" },
+    { common: "Dentist", spy: "Orthodontist" },
+    { common: "Author", spy: "Editor" },
+    { common: "Singer", spy: "Dancer" },
+    { common: "Painter", spy: "Sculptor" },
+    { common: "Driver", spy: "Racer" },
+    { common: "Scientist", spy: "Inventor" },
+    { common: "Student", spy: "Intern" },
+    { common: "Professor", spy: "Lecturer" },
+    { common: "Barber", spy: "Stylist" },
+    { common: "Mechanic", spy: "Technician" },
+    { common: "Soldier", spy: "Mercenary" },
+    { common: "Librarian", spy: "Archivist" },
+    { common: "Reporter", spy: "Blogger" },
+    { common: "Photographer", spy: "Videographer" },
+    { common: "Magician", spy: "Illusionist" },
+    { common: "Director", spy: "Producer" },
+    { common: "Actor", spy: "Stuntman" },
+    { common: "Painter", spy: "Graffiti Artist" },
+    { common: "Tailor", spy: "Designer" },
+    { common: "Judge", spy: "Referee" },
+    { common: "Driver", spy: "Courier" },
+    { common: "Coach", spy: "Referee" },
+    { common: "Sailor", spy: "Fisherman" },
+    { common: "Baker", spy: "Pastry Chef" },
+    { common: "Poet", spy: "Lyricist" },
+    { common: "Singer", spy: "Rapper" },
+    { common: "Detective", spy: "Agent" },
+    { common: "Clerk", spy: "Receptionist" },
+    { common: "Plumber", spy: "Electrician" },
+    { common: "Nurse", spy: "Caregiver" },
+    { common: "Firefighter", spy: "Rescuer" },
+    { common: "Lawyer", spy: "Prosecutor" },
+    { common: "Judge", spy: "Lawyer" },
+    { common: "Athlete", spy: "Trainer" },
+    { common: "Coach", spy: "Manager" },
+    { common: "Actor", spy: "Comedian" },
+    { common: "Pilot", spy: "Flight Attendant" },
+    { common: "Scientist", spy: "Researcher" },
+    { common: "Professor", spy: "Tutor" },
+    { common: "Secretary", spy: "Assistant" },
+    { common: "Director", spy: "Cinematographer" },
+    { common: "Soldier", spy: "Commander" },
+    { common: "Author", spy: "Novelist" },
+    { common: "Engineer", spy: "Developer" },
+    { common: "Technician", spy: "Mechanic" },
+    { common: "Architect", spy: "Builder" },
+    { common: "Astronaut", spy: "Cosmonaut" },
+    { common: "Therapist", spy: "Counselor" },
+    { common: "Cashier", spy: "Bank Teller" },
+    { common: "Waiter", spy: "Host" },
+    { common: "Waitress", spy: "Server" },
+    { common: "Butcher", spy: "Chef" },
+    { common: "Veterinarian", spy: "Zoologist" },
+    { common: "Musician", spy: "Composer" },
+    { common: "Singer", spy: "Opera Singer" },
+    { common: "Janitor", spy: "Custodian" },
+    { common: "Programmer", spy: "Coder" },
+    { common: "Developer", spy: "Engineer" },
+    { common: "Broker", spy: "Trader" },
+    { common: "Banker", spy: "Accountant" },
+    { common: "Guard", spy: "Security" },
+    { common: "Driver", spy: "Pilot" },
+    { common: "Delivery", spy: "Courier" },
+    { common: "Captain", spy: "Sailor" },
+    { common: "Surgeon", spy: "Doctor" },
+    { common: "Nurse", spy: "Midwife" },
+    { common: "Researcher", spy: "Scholar" },
+    { common: "Mechanic", spy: "Engineer" },
+    { common: "Athlete", spy: "Bodybuilder" },
+    { common: "Trainer", spy: "Coach" },
+    { common: "Model", spy: "Influencer" },
+    { common: "Artist", spy: "Painter" },
+    { common: "Actor", spy: "Performer" },
+    { common: "Singer", spy: "Performer" },
+    { common: "Director", spy: "Editor" },
+    { common: "Teacher", spy: "Tutor" },
+    { common: "Student", spy: "Apprentice" },
+    { common: "Programmer", spy: "Hacker" },
+    { common: "Dancer", spy: "Choreographer" },
+    { common: "Technician", spy: "Operator" },
+    { common: "Editor", spy: "Proofreader" },
+    { common: "Designer", spy: "Artist" },
+    { common: "Driver", spy: "Taxi Driver" },
+    { common: "Developer", spy: "Tester" },
+    { common: "Referee", spy: "Umpire" },
+    { common: "Coach", spy: "Scout" },
+    { common: "Singer", spy: "Voice Actor" },
+    { common: "Chef", spy: "Sous Chef" },
+    { common: "Firefighter", spy: "Fire Marshal" },
+    { common: "Policeman", spy: "Sheriff" },
+    { common: "Judge", spy: "Magistrate" },
+    { common: "Lawyer", spy: "Advocate" },
+    { common: "Barber", spy: "Hairdresser" },
+    { common: "Mechanic", spy: "Repairman" },
+    { common: "Tailor", spy: "Cobbler" },
+    { common: "Plumber", spy: "Pipefitter" },
+    { common: "Chef", spy: "Cook" },
+    { common: "Scientist", spy: "Lab Assistant" },
+    { common: "Astronaut", spy: "Pilot" },
+    { common: "Editor", spy: "Screenwriter" },
+    { common: "Dancer", spy: "Ballerina" },
+    { common: "Librarian", spy: "Bookstore Clerk" },
+    { common: "Poet", spy: "Writer" },
+    { common: "Captain", spy: "Commander" },
+    { common: "Painter", spy: "Muralist" },
+    { common: "Sculptor", spy: "Carver" },
+    { common: "Model", spy: "Presenter" },
+    { common: "Photographer", spy: "Reporter" },
+    { common: "Soldier", spy: "Guard" },
+    { common: "Firefighter", spy: "Paramedic" },
+    { common: "Therapist", spy: "Psychologist" },
+    { common: "Counselor", spy: "Life Coach" },
+    { common: "Pilot", spy: "Captain" },
+    { common: "Fisherman", spy: "Boater" },
+    { common: "Veterinarian", spy: "Pet Groomer" },
+    { common: "Receptionist", spy: "Secretary" },
+    { common: "Cashier", spy: "Clerk" },
+    { common: "Trainer", spy: "Nutritionist" },
+    { common: "Architect", spy: "Interior Designer" },
+    { common: "Electrician", spy: "Technician" },
+    { common: "Manager", spy: "Supervisor" },
+    { common: "Assistant", spy: "Intern" },
+    { common: "CEO", spy: "Director" },
+    { common: "Cook", spy: "Waiter" },
+    { common: "Delivery", spy: "Mover" },
+    { common: "Detective", spy: "Undercover" },
+    { common: "Agent", spy: "Spy" },
+    { common: "Athlete", spy: "Referee" },
+    { common: "Janitor", spy: "Cleaner" },
+    { common: "Developer", spy: "Sysadmin" },
+    { common: "Programmer", spy: "Game Developer" },
+    { common: "Accountant", spy: "Auditor" },
+    { common: "Banker", spy: "Loan Officer" },
+    { common: "Therapist", spy: "Social Worker" },
+    { common: "Stylist", spy: "Makeup Artist" },
+    { common: "Sailor", spy: "Navy" },
+    { common: "Guard", spy: "Watchman" },
+    { common: "Courier", spy: "Postman" },
+    { common: "Technician", spy: "Installer" },
+    { common: "Cook", spy: "Butcher" },
+    { common: "Actor", spy: "Extra" },
+    { common: "Author", spy: "Journalist" },
+    { common: "Journalist", spy: "News Anchor" },
+    { common: "Security", spy: "Bouncer" },
+    { common: "Teacher", spy: "Counselor" },
+    { common: "Intern", spy: "Trainee" },
+    { common: "Scientist", spy: "Physicist" },
+    { common: "Doctor", spy: "Surgeon" },
+    { common: "Surgeon", spy: "Anesthetist" },
+    { common: "Dentist", spy: "Hygienist" },
+    { common: "Pharmacist", spy: "Chemist" },
+    { common: "Engineer", spy: "Scientist" },
+    { common: "Tester", spy: "QA Analyst" },
+    { common: "Comedian", spy: "Clown" },
+    { common: "Cleaner", spy: "Maid" },  
 ];
 
 
@@ -302,8 +254,16 @@ const SpyGame = () => {
       });
       return;
     }
+    if (total > 20) {
+      toast({
+        title: "Too Many Players",
+        description: "Maximum allowed players is 20.",
+        variant: "destructive"
+      });
+      return;
+    }
 
-    setPlayerNamesForm(Array(total).fill(''));
+    setPlayerNamesForm(Array.from({ length: total }, (_, i) => `Player ${i + 1}`));
     setGameState(prev => ({ 
       ...prev, 
       totalPlayers: total,
@@ -325,7 +285,7 @@ const SpyGame = () => {
     }
 
     // Randomly select word pair
-    const selectedPair = wordPairs[Math.floor(Math.random() * wordPairs.length)];
+    const selectedPair = moreWordPairs[Math.floor(Math.random() * moreWordPairs.length)];
     
     // Randomly assign spy players
     const spyPlayers = new Set<number>();
@@ -334,22 +294,23 @@ const SpyGame = () => {
       spyPlayers.add(randomPlayer);
     }
 
-    setGameState(prev => ({
-      ...prev,
-      selectedPair,
-      currentPlayer: 1,
-      wordRevealed: false,
-      gamePhase: 'reveal',
-      spyPlayers,
-      playerNames: playerNamesForm,
-      timeLeft: 300
-    }));
+   setGameState(prev => ({
+  ...prev,
+  selectedPair,
+  currentPlayer: 1,
+  wordRevealed: false,
+  gamePhase: 'reveal',
+  spyPlayers,
+  playerNames: playerNamesForm,
+  timeLeft: 300
+}));
 
-    toast({
-      title: "Game Started!",
-      description: `${gameState.totalPlayers} players, ${gameState.spyCount} ${gameState.spyCount === 1 ? 'spy' : 'spies'}. Pass to ${playerNamesForm[0]}.`,
-      variant: "default"
-    });
+toast({
+  title: "Game Started!",
+  description: `${playerNamesForm.length} players, ${spyPlayers.size} ${spyPlayers.size === 1 ? 'spy' : 'spies'}. Pass to ${playerNamesForm[0]}.`,
+  variant: "default"
+});
+
   };
 
   const revealWord = () => {
@@ -425,6 +386,7 @@ const SpyGame = () => {
                     id="totalPlayers"
                     type="number"
                     min="3"
+                    max="20"
                     placeholder="Enter number of players"
                     value={setupForm.totalPlayers}
                     onChange={(e) => setSetupForm(prev => ({ ...prev, totalPlayers: e.target.value }))}
@@ -466,6 +428,7 @@ const SpyGame = () => {
 
   if (gameState.gamePhase === 'names') {
     return (
+      
       <div className="min-h-screen bg-background p-4 flex items-center justify-center">
         <div className="w-full max-w-md animate-slide-up">
           <Card className="bg-card border-spy-gold/20 shadow-elegant">
@@ -594,7 +557,26 @@ const SpyGame = () => {
     );
   }
 
-  if (gameState.gamePhase === 'complete') {
+  if (gameState.gamePhase === "complete") {
+    const handleNewWord = () => {
+      // Randomly select new word pair
+      const selectedPair = moreWordPairs[Math.floor(Math.random() * moreWordPairs.length)];
+      // Randomly assign spy players
+      const spyPlayers = new Set<number>();
+      while (spyPlayers.size < gameState.spyCount) {
+        const randomPlayer = Math.floor(Math.random() * gameState.totalPlayers) + 1;
+        spyPlayers.add(randomPlayer);
+      }
+      setGameState(prev => ({
+        ...prev,
+        selectedPair,
+        currentPlayer: 1,
+        wordRevealed: false,
+        gamePhase: 'reveal',
+        spyPlayers,
+        timeLeft: 300
+      }));
+    };
     return (
       <div className="min-h-screen bg-background p-4 flex items-center justify-center">
         <div className="w-full max-w-md animate-slide-up">
@@ -623,14 +605,21 @@ const SpyGame = () => {
                 </p>
                 <div className="p-4 bg-spy-gold/10 border border-spy-gold/30 rounded-lg">
                   <p className="text-spy-gold font-semibold">
-                    {gameState.timeLeft > 0 
-                      ? "Discuss and vote out the spy!" 
+                    {gameState.timeLeft > 0
+                      ? "Discuss and vote out the spy!"
                       : "Time to reveal the results!"}
                   </p>
                 </div>
-                
-                
-              <Button 
+              </div>
+              <Button
+                onClick={handleNewWord}
+                variant="default"
+                size="lg"
+                className="w-full mb-2"
+              >
+                New Word
+              </Button>
+              <Button
                 onClick={resetGame}
                 variant="outline"
                 size="lg"
@@ -645,7 +634,7 @@ const SpyGame = () => {
     );
   }
 
-  return null;
+  return null; // fallback if gamePhase !== "complete"
 };
 
 export default SpyGame;

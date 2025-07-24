@@ -172,8 +172,6 @@ const moreWordPairs = [
     // { common: "Tester", spy: "QA Analyst" },
     // { common: "Comedian", spy: "Clown" },
     // { common: "Cleaner", spy: "Maid" },  
-    
-];[
   { "common": "Car", "spy": "Vehicle" },
   { "common": "House", "spy": "Safehouse" },
   { "common": "Phone", "spy": "Comm device" },
@@ -338,7 +336,7 @@ const moreWordPairs = [
   { "common": "Fan", "spy": "Air mover" },
   { "common": "Heater", "spy": "Heat unit" },
   { "common": "AC", "spy": "Cooling unit" }
-]
+];
 
 
 
